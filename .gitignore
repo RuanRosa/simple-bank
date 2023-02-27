@@ -16,3 +16,4 @@
 
 .vscode
 go.sum
+.env
