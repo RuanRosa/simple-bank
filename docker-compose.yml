@@ -1,0 +1,26 @@
+version: "3.1"
+
+services:
+  simple_bank_db:
+    container_name: simple_bank_db
+    image: postgres:13.2-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: simple_bank_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports: 
+      - 5432:5432
+  
+  api:
+    container_name: simple_bank_api
+    build: .
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=suricate
+      - DATABASE_HOST=suricate_db
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
