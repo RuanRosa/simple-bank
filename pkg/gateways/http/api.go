@@ -1,24 +1,31 @@
 package http
 
 import (
-	"log"
+    "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/account"
+    "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/transfer"
+    "log"
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 )
 
-type API struct{}
+type API struct{
+    port string
+}
 
-func NewAPI() *API {
-	return &API{}
+func NewAPI(port string) *API {
+	return &API{
+        port: port,
+    }
 }
 
 func (a *API) Start() {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+    account.NewHandler(r)
+    transfer.NewHandler(r)
+
+	if err := http.ListenAndServe(a.port, r); err != nil {
 		log.Fatal(err)
 	}
 }

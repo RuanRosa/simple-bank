@@ -32,6 +32,7 @@ type variables struct {
 	DbHost     string `envconfig:"DATABASE_HOST"`
 	DbPort     string `envconfig:"DATABASE_PORT"`
 	DbSSL      string `envconfig:"DATABASE_SSL"`
+    Port       string `envconfig:"PORT"`
 }
 
 func (c *config) Load() {
