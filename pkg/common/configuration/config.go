@@ -11,11 +11,14 @@ import (
 type IConfig interface {
 	Load()
 	ENV() variables
-	PostgresURI() string
+	PostgresDSN() string
+	PostgresURL() string
 }
 
 type config struct {
 	loadedVariables variables
+	postgresDSN     string
+	postgresURL     string
 }
 
 func NewConfig() IConfig {
@@ -28,6 +31,7 @@ type variables struct {
 	DbPassword string `envconfig:"DATABASE_PASSWORD"`
 	DbHost     string `envconfig:"DATABASE_HOST"`
 	DbPort     string `envconfig:"DATABASE_PORT"`
+	DbSSL      string `envconfig:"DATABASE_SSL"`
 }
 
 func (c *config) Load() {
@@ -37,17 +41,40 @@ func (c *config) Load() {
 	if err := envconfig.Process(noPrefix, &c.loadedVariables); err != nil {
 		log.Fatal(err)
 	}
+
+	c.postgresDSN = fmt.Sprintf(
+		"user=%s password=%s host=%s port=%s dbname=%s",
+		c.loadedVariables.DbUser,
+		c.loadedVariables.DbPassword,
+		c.loadedVariables.DbHost,
+		c.loadedVariables.DbPort,
+		c.loadedVariables.DbName,
+	)
+
+	sslMode := new(string)
+
+	if c.loadedVariables.DbSSL == "" {
+		*sslMode = "disable"
+	}
+
+	c.postgresURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		c.loadedVariables.DbUser,
+		c.loadedVariables.DbPassword,
+		c.loadedVariables.DbHost,
+		c.loadedVariables.DbPort,
+		c.loadedVariables.DbName,
+		*sslMode,
+	)
 }
 
 func (c *config) ENV() variables {
 	return c.loadedVariables
 }
 
-func (c *config) PostgresURI() string {
-	env := c.ENV()
+func (c *config) PostgresDSN() string {
+	return c.postgresDSN
+}
 
-	return fmt.Sprintf(
-		"user=%s password=%s host=%s port=%s dbname=%s",
-		env.DbUser, env.DbPassword, env.DbHost, env.DbPort, env.DbName,
-	)
+func (c *config) PostgresURL() string {
+	return c.postgresURL
 }

@@ -1,32 +1,33 @@
 package main
 
 import (
+	"log"
+
 	"github.com/RuanRosa/simple-bank/pkg/common/configuration"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/http"
-	"go.uber.org/zap"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	// Create log
-	logger, _ := zap.NewProduction()
-	defer logger.Sync() // flushes buffer, if any
-	log := logger.Sugar()
-
 	// Load config.
 	config := configuration.NewConfig()
 	config.Load()
 
 	// Load database and get connetion.
+	logrus.Info("connecting in postgres...")
 
-	log.Info("postgres connection...")
-
-	_, err := postgres.GetConnection(config.PostgresURI())
+	_, err := postgres.GetConnection(config.PostgresDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Info("postgres successfully connected...")
+	logrus.Info("successfully connected !")
+
+	// Load migrate.
+	if err := postgres.Migrate(config.PostgresURL()); err != nil {
+		logrus.Fatal(err)
+	}
 
 	// Create api and run.
 	http.NewAPI().Start()
