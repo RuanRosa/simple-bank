@@ -2,24 +2,30 @@ package http
 
 import (
     "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/account"
+    "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/transfer"
     "log"
 	"net/http"
 
 	"github.com/go-chi/chi"
 )
 
-type API struct{}
+type API struct{
+    port string
+}
 
-func NewAPI() *API {
-	return &API{}
+func NewAPI(port string) *API {
+	return &API{
+        port: port,
+    }
 }
 
 func (a *API) Start() {
 	r := chi.NewRouter()
 
     account.NewHandler(r)
+    transfer.NewHandler(r)
 
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(a.port, r); err != nil {
 		log.Fatal(err)
 	}
 }

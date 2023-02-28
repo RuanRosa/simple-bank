@@ -30,5 +30,5 @@ func main() {
 	}
 
 	// Create api and run.
-	http.NewAPI().Start()
+	http.NewAPI(config.ENV().Port).Start()
 }
