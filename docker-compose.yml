@@ -16,7 +16,7 @@ services:
     container_name: simple_bank_api
     build: .
     ports:
-      - 8080:8080
+      - 3000:3000
     restart: always
     environment:
       - DATABASE_PORT=5432
@@ -24,3 +24,4 @@ services:
       - DATABASE_HOST=suricate_db
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=postgres
+      - PORT=8080
