@@ -1,23 +1,25 @@
 package configuration
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
 
-type IEnv interface {
+type IConfig interface {
 	Load()
-	Get() variables
+	ENV() variables
+	PostgresURI() string
 }
 
-type env struct {
+type config struct {
 	loadedVariables variables
 }
 
-func NewEnv() IEnv {
-	return &env{}
+func NewConfig() IConfig {
+	return &config{}
 }
 
 type variables struct {
@@ -28,15 +30,24 @@ type variables struct {
 	DbPort     string `envconfig:"DATABASE_PORT"`
 }
 
-func (e *env) Load() {
+func (c *config) Load() {
 	godotenv.Load()
 
 	noPrefix := ""
-	if err := envconfig.Process(noPrefix, &e.loadedVariables); err != nil {
+	if err := envconfig.Process(noPrefix, &c.loadedVariables); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func (e *env) Get() variables {
-	return e.loadedVariables
+func (c *config) ENV() variables {
+	return c.loadedVariables
+}
+
+func (c *config) PostgresURI() string {
+	env := c.ENV()
+
+	return fmt.Sprintf(
+		"user=%s password=%s host=%s port=%s dbname=%s",
+		env.DbUser, env.DbPassword, env.DbHost, env.DbPort, env.DbName,
+	)
 }
