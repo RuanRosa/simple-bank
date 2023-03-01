@@ -1,9 +1,11 @@
 package account
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/RuanRosa/simple-bank/pkg/util/response"
+	"github.com/jackc/pgx/v4"
 )
 
 func (h *Handler) All(w http.ResponseWriter, r *http.Request) {
@@ -19,6 +21,11 @@ func (h *Handler) All(w http.ResponseWriter, r *http.Request) {
 
 	response := response.Json{}
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			response.WriteError(w, err, http.StatusNotFound)
+			return
+		}
+
 		response.WriteError(w, err, http.StatusInternalServerError)
 	}
 

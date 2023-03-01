@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/RuanRosa/simple-bank/pkg/domain/entities/account"
+	"github.com/jackc/pgx/v4"
 )
 
 func (r *repository) GetAccounts(ctx context.Context) ([]account.Entity, error) {
@@ -19,9 +20,11 @@ func (r *repository) GetAccounts(ctx context.Context) ([]account.Entity, error) 
 	accounts := []account.Entity{}
 
 	rows, err := r.DB.Query(ctx, query)
+
 	if err != nil {
 		return nil, err
 	}
+
 	defer rows.Close()
 
 	for rows.Next() {
@@ -42,8 +45,8 @@ func (r *repository) GetAccounts(ctx context.Context) ([]account.Entity, error) 
 		accounts = append(accounts, acc)
 	}
 
-	if err := rows.Err(); err != nil {
-		return nil, err
+	if len(accounts) == 0 {
+		return nil, pgx.ErrNoRows
 	}
 
 	return accounts, nil
