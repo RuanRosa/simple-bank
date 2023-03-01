@@ -4,7 +4,9 @@ import (
 	"log"
 
 	"github.com/RuanRosa/simple-bank/pkg/common/configuration"
+	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/account"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres"
+	account_repository "github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres/entries/account"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/http"
 	"github.com/sirupsen/logrus"
 )
@@ -17,7 +19,7 @@ func main() {
 	// Load database and get connetion.
 	logrus.Info("connecting in postgres...")
 
-	_, err := postgres.GetConnection(config.PostgresDSN())
+	db, err := postgres.GetConnection(config.PostgresDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,6 +31,12 @@ func main() {
 		logrus.Fatal(err)
 	}
 
+	// Repository load constructor
+	accountRepository := account_repository.NewRepository(db)
+
+	// Usecase load constructor
+	accountUsecase := account.NewUsecase(accountRepository)
+
 	// Create api and run.
-	http.NewAPI(config.ENV().Port).Start()
+	http.NewAPI(config.ENV().Port).Start(accountUsecase)
 }

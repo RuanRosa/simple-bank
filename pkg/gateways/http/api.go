@@ -1,31 +1,41 @@
 package http
 
 import (
-    "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/account"
-    "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/transfer"
-    "log"
+	"fmt"
+
+	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/account"
+	account_handler "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/account"
+
+	"log"
 	"net/http"
+
+	"github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/transfer"
 
 	"github.com/go-chi/chi"
 )
 
-type API struct{
-    port string
+type API struct {
+	port string
 }
 
 func NewAPI(port string) *API {
 	return &API{
-        port: port,
-    }
+		port: port,
+	}
 }
 
-func (a *API) Start() {
+func (a *API) Start(usecase account.IUsecase) {
 	r := chi.NewRouter()
+	r.Get("/health", a.healthCheck)
 
-    account.NewHandler(r)
-    transfer.NewHandler(r)
+	account_handler.NewHandler(r, usecase)
+	transfer.NewHandler(r)
 
-	if err := http.ListenAndServe(a.port, r); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", a.port), r); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func (a *API) healthCheck(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }

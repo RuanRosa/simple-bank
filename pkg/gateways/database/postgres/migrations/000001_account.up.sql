@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS account
 (
-	id uuid PRIMARY KEY,
+	id serial PRIMARY KEY,
 	name varchar(255) NOT NULL,
 	cpf varchar(14) NOT NULL UNIQUE,
 	secret varchar(100) NOT NULL,
