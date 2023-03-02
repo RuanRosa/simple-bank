@@ -2,7 +2,6 @@ package response
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -21,5 +20,10 @@ func (j *Json) Write(w http.ResponseWriter, payload interface{}, statusCode int)
 
 func (j *Json) WriteError(w http.ResponseWriter, err error, statusCode int) {
 	w.WriteHeader(statusCode)
-	w.Write([]byte(fmt.Sprintf("error: %s", err.Error())))
+	errorMsg := map[string]interface{}{
+		"error:": err.Error(),
+	}
+
+	b, _ := json.Marshal(errorMsg)
+	w.Write(b)
 }

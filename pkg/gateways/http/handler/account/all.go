@@ -27,6 +27,7 @@ func (h *Handler) All(w http.ResponseWriter, r *http.Request) {
 		}
 
 		response.WriteError(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	response.Write(w, respBody, http.StatusOK)

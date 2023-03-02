@@ -14,6 +14,13 @@ type responseBody struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type saveRequestBody struct {
+	Name    string `json:"name"`
+	CPF     string `json:"cpf"`
+	Balance int    `json:"balance"`
+	Secret  string `json:"secret"`
+}
+
 func entiyToResponse(entity account.Entity) responseBody {
 	return responseBody{
 		ID:        entity.ID,
@@ -21,5 +28,14 @@ func entiyToResponse(entity account.Entity) responseBody {
 		CPF:       entity.CPF,
 		Balance:   entity.Balance,
 		CreatedAt: entity.CreatedAt,
+	}
+}
+
+func requestToEntity(req saveRequestBody) account.Entity {
+	return account.Entity{
+		Name:    req.Name,
+		CPF:     req.CPF,
+		Secret:  req.Secret,
+		Balance: req.Balance,
 	}
 }

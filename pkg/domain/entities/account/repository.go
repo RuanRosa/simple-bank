@@ -5,5 +5,7 @@ import (
 )
 
 type IRepository interface {
-	GetAccounts(ctx context.Context) ([]Entity, error)
+	GetAccounts(ctx *context.Context) ([]Entity, error)
+	Save(ctx *context.Context, req *Entity) error
+	GetByCPF(ctx context.Context, CPF string) (*Entity, error)
 }
