@@ -8,22 +8,32 @@ import (
 type Json struct{}
 
 func (j *Json) Write(w http.ResponseWriter, payload interface{}, statusCode int) {
-	respByte, err := json.Marshal(payload)
-	if err != nil {
-		j.WriteError(w, err, http.StatusInternalServerError)
-		return
+	body := []byte{}
+
+	if payload != nil {
+		resp, err := json.Marshal(payload)
+		if err != nil {
+			j.WriteError(w, err, http.StatusInternalServerError)
+			return
+		}
+
+		body = resp
 	}
 
 	w.WriteHeader(statusCode)
-	w.Write(respByte)
+	w.Write(body)
 }
 
 func (j *Json) WriteError(w http.ResponseWriter, err error, statusCode int) {
 	w.WriteHeader(statusCode)
-	errorMsg := map[string]interface{}{
-		"error:": err.Error(),
+	body := []byte{}
+	if err != nil {
+		errorMsg := map[string]interface{}{
+			"error:": err.Error(),
+		}
+
+		body, _ = json.Marshal(errorMsg)
 	}
 
-	b, _ := json.Marshal(errorMsg)
-	w.Write(b)
+	w.Write(body)
 }

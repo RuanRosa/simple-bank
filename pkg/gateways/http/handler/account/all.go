@@ -22,7 +22,7 @@ func (h *Handler) All(w http.ResponseWriter, r *http.Request) {
 	response := response.Json{}
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			response.WriteError(w, err, http.StatusNotFound)
+			response.WriteError(w, nil, http.StatusNotFound)
 			return
 		}
 

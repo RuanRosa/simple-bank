@@ -14,6 +14,7 @@ type IUsecase interface {
 	All(ctx *context.Context) ([]account.Entity, error)
 	Save(ctx *context.Context, req *account.Entity) error
 	GetByCPF(ctx *context.Context, cpf string) (*account.Entity, error)
+	GetByID(ctx *context.Context, AccountID int) (*account.Entity, error)
 }
 
 func NewUsecase(repository account.IRepository) IUsecase {
