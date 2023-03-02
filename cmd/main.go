@@ -8,6 +8,7 @@ import (
 	"github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres"
 	account_repository "github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres/entries/account"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/http"
+	"github.com/RuanRosa/simple-bank/pkg/gateways/service/auth"
 	"github.com/sirupsen/logrus"
 )
 
@@ -37,6 +38,9 @@ func main() {
 	// Usecase load constructor
 	accountUsecase := account.NewUsecase(accountRepository)
 
+	// Service load constructor
+	authService := auth.NewService(accountUsecase, config.ENV().AccessSecret)
+
 	// Create api and run.
-	http.NewAPI(config.ENV().Port).Start(accountUsecase)
+	http.NewAPI(config.ENV().Port).Start(accountUsecase, authService)
 }
