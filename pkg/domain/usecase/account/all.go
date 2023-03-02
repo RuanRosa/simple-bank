@@ -7,5 +7,5 @@ import (
 )
 
 func (u *usecase) All(ctx *context.Context) ([]account.Entity, error) {
-	return u.repository.GetAccounts(*ctx)
+	return u.repository.GetAccounts(ctx)
 }

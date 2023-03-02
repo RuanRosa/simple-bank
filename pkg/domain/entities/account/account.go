@@ -1,6 +1,9 @@
 package account
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type Entity struct {
 	ID        int
@@ -10,3 +13,5 @@ type Entity struct {
 	Balance   int
 	CreatedAt time.Time
 }
+
+var ErrCpfAlredyExists error = errors.New("cpf already exists")

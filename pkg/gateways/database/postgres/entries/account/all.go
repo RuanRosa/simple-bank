@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-func (r *repository) GetAccounts(ctx context.Context) ([]account.Entity, error) {
+func (r *repository) GetAccounts(ctx *context.Context) ([]account.Entity, error) {
 	query := `
 		SELECT 
 			id,
@@ -19,7 +19,7 @@ func (r *repository) GetAccounts(ctx context.Context) ([]account.Entity, error) 
 	`
 	accounts := []account.Entity{}
 
-	rows, err := r.DB.Query(ctx, query)
+	rows, err := r.DB.Query(*ctx, query)
 
 	if err != nil {
 		return nil, err
