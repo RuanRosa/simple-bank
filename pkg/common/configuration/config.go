@@ -26,13 +26,14 @@ func NewConfig() IConfig {
 }
 
 type variables struct {
-	DbName     string `envconfig:"DATABASE_NAME"`
-	DbUser     string `envconfig:"DATABASE_USER"`
-	DbPassword string `envconfig:"DATABASE_PASSWORD"`
-	DbHost     string `envconfig:"DATABASE_HOST"`
-	DbPort     string `envconfig:"DATABASE_PORT"`
-	DbSSL      string `envconfig:"DATABASE_SSL"`
-    Port       string `envconfig:"PORT"`
+	DbName       string `envconfig:"DATABASE_NAME"`
+	DbUser       string `envconfig:"DATABASE_USER"`
+	DbPassword   string `envconfig:"DATABASE_PASSWORD"`
+	DbHost       string `envconfig:"DATABASE_HOST"`
+	DbPort       string `envconfig:"DATABASE_PORT"`
+	DbSSL        string `envconfig:"DATABASE_SSL"`
+	Port         string `envconfig:"PORT"`
+	AccessSecret string `envconfig:"ACCESS_SECRET"`
 }
 
 func (c *config) Load() {
