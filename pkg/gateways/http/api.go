@@ -6,6 +6,8 @@ import (
 	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/account"
 	account_handler "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/account"
 	auth_handler "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/auth"
+	auth_middleware "github.com/RuanRosa/simple-bank/pkg/gateways/http/middleware/auth"
+
 	"github.com/RuanRosa/simple-bank/pkg/gateways/service/auth"
 
 	"log"
@@ -26,11 +28,16 @@ func NewAPI(port string) *API {
 	}
 }
 
-func (a *API) Start(usecase account.IUsecase, authService auth.Service) {
+func (a *API) Start(
+	usecase account.IUsecase,
+	authService auth.Service,
+	authMiddleware auth_middleware.Middleware,
+) {
 	r := chi.NewRouter()
+
 	r.Get("/health", a.healthCheck)
 
-	account_handler.NewHandler(r, usecase)
+	account_handler.NewHandler(r, usecase, authMiddleware)
 	transfer.NewHandler(r)
 	auth_handler.NewHandler(r, authService)
 

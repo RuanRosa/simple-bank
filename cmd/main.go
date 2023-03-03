@@ -6,8 +6,10 @@ import (
 	"github.com/RuanRosa/simple-bank/pkg/common/configuration"
 	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/account"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres"
-	account_repository "github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres/entries/account"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/http"
+	auth_middleware "github.com/RuanRosa/simple-bank/pkg/gateways/http/middleware/auth"
+
+	account_repository "github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres/entries/account"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/service/auth"
 	"github.com/sirupsen/logrus"
 )
@@ -41,6 +43,9 @@ func main() {
 	// Service load constructor
 	authService := auth.NewService(accountUsecase, config.ENV().AccessSecret)
 
+	// Middleware load constructor
+	middleware := auth_middleware.NewMiddleware(authService)
+
 	// Create api and run.
-	http.NewAPI(config.ENV().Port).Start(accountUsecase, authService)
+	http.NewAPI(config.ENV().Port).Start(accountUsecase, authService, middleware)
 }
