@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"errors"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -11,8 +10,6 @@ type Credentials struct {
 	CPF    string `json:"cpf"`
 	Secret string `json:"secret"`
 }
-
-var ErrInvalidSecret error = errors.New("invalid secret")
 
 func (s *Service) Login(credentials Credentials) (*string, error) {
 	ctx := context.Background()
@@ -23,7 +20,7 @@ func (s *Service) Login(credentials Credentials) (*string, error) {
 	}
 
 	if acc.Secret != credentials.Secret {
-		return nil, ErrInvalidSecret
+		return nil, ErrInvalidToken
 	}
 
 	return s.createToken(&acc.ID)

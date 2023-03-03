@@ -28,7 +28,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if errors.Is(err, auth.ErrInvalidSecret) {
+		if errors.Is(err, auth.ErrInvalidToken) {
 			response.WriteError(w, err, http.StatusUnauthorized)
 			return
 		}
