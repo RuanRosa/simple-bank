@@ -5,11 +5,13 @@ import (
 
 	"github.com/RuanRosa/simple-bank/pkg/common/configuration"
 	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/account"
+	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/transfer"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/http"
 	auth_middleware "github.com/RuanRosa/simple-bank/pkg/gateways/http/middleware/auth"
 
 	account_repository "github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres/entries/account"
+	transfer_repository "github.com/RuanRosa/simple-bank/pkg/gateways/database/postgres/entries/transfer"
 	"github.com/RuanRosa/simple-bank/pkg/gateways/service/auth"
 	"github.com/sirupsen/logrus"
 )
@@ -36,9 +38,11 @@ func main() {
 
 	// Repository load constructor
 	accountRepository := account_repository.NewRepository(db)
+	transferRepository := transfer_repository.NewRepository(db)
 
 	// Usecase load constructor
 	accountUsecase := account.NewUsecase(accountRepository)
+	transferUsecase := transfer.NewUsecase(transferRepository, accountUsecase)
 
 	// Service load constructor
 	authService := auth.NewService(accountUsecase, config.ENV().AccessSecret)
@@ -47,5 +51,5 @@ func main() {
 	middleware := auth_middleware.NewMiddleware(authService)
 
 	// Create api and run.
-	http.NewAPI(config.ENV().Port).Start(accountUsecase, authService, middleware)
+	http.NewAPI(config.ENV().Port).Start(accountUsecase, authService, middleware, transferUsecase)
 }

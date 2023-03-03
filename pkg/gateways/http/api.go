@@ -4,16 +4,17 @@ import (
 	"fmt"
 
 	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/account"
+	"github.com/RuanRosa/simple-bank/pkg/domain/usecase/transfer"
 	account_handler "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/account"
 	auth_handler "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/auth"
+	transfer_handler "github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/transfer"
+
 	auth_middleware "github.com/RuanRosa/simple-bank/pkg/gateways/http/middleware/auth"
 
 	"github.com/RuanRosa/simple-bank/pkg/gateways/service/auth"
 
 	"log"
 	"net/http"
-
-	"github.com/RuanRosa/simple-bank/pkg/gateways/http/handler/transfer"
 
 	"github.com/go-chi/chi"
 )
@@ -29,16 +30,17 @@ func NewAPI(port string) *API {
 }
 
 func (a *API) Start(
-	usecase account.IUsecase,
+	accountUsecase account.IUsecase,
 	authService auth.Service,
 	authMiddleware auth_middleware.Middleware,
+	transferUsecase transfer.IUsecase,
 ) {
 	r := chi.NewRouter()
 
 	r.Get("/health", a.healthCheck)
 
-	account_handler.NewHandler(r, usecase, authMiddleware)
-	transfer.NewHandler(r)
+	account_handler.NewHandler(r, accountUsecase, authMiddleware)
+	transfer_handler.NewHandler(r, transferUsecase, authMiddleware)
 	auth_handler.NewHandler(r, authService)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", a.port), r); err != nil {
