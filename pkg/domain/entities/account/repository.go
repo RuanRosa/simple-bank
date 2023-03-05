@@ -9,4 +9,6 @@ type IRepository interface {
 	Save(ctx *context.Context, req *Entity) error
 	GetByCPF(ctx context.Context, CPF string) (*Entity, error)
 	GetByID(ctx context.Context, AccountID int) (*Entity, error)
+	Discount(ctx *context.Context, req *Entity) error
+	Deposit(ctx *context.Context, req *Entity) error
 }

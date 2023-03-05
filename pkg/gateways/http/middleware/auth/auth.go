@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/RuanRosa/simple-bank/pkg/gateways/service/auth"
@@ -17,7 +18,7 @@ func (m *Middleware) Check(next http.Handler) http.Handler {
 			Secret: secret,
 		}
 
-		_, err := m.authService.IsValid(credentials)
+		accountId, err := m.authService.IsValid(credentials)
 		if err != nil {
 			if errors.Is(err, auth.ErrInvalidToken) {
 				response.WriteError(w, err, http.StatusUnauthorized)
@@ -28,6 +29,7 @@ func (m *Middleware) Check(next http.Handler) http.Handler {
 			return
 		}
 
+		r.Header.Add("account_id", fmt.Sprintf("%v", *accountId))
 		next.ServeHTTP(w, r)
 	})
 }
