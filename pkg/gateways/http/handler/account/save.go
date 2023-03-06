@@ -33,7 +33,7 @@ func (h *Handler) Save(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := entiyToResponse(entity)
+	resp := entityToResponse(entity)
 
 	response.Write(w, resp, http.StatusCreated)
 }

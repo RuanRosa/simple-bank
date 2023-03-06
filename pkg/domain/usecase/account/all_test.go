@@ -53,7 +53,7 @@ func TestAllShouldReturnAccountEntity(t *testing.T) {
 
 	for _, scenario := range []testCases{
 		{
-			description:    "should return populated entiy",
+			description:    "should return populated entity",
 			expectedEntity: []account.Entity{},
 			expectedError:  nil,
 		},

@@ -16,7 +16,7 @@ func TestSaveShouldError(t *testing.T) {
 		expectedError         error
 		expectedSave          account.Entity
 		expectedGetByCpfError error
-		expectedGetByCpfEntiy *account.Entity
+		expectedGetByCpfMock  *account.Entity
 	}
 
 	expectedSave := account.Entity{
@@ -31,7 +31,7 @@ func TestSaveShouldError(t *testing.T) {
 			description:   "should return already exists cpf error",
 			expectedError: account.ErrCpfAlredyExists,
 			expectedSave:  expectedSave,
-			expectedGetByCpfEntiy: &account.Entity{
+			expectedGetByCpfMock: &account.Entity{
 				ID:        1,
 				Name:      "Ruan",
 				CPF:       "44591466817",
@@ -54,7 +54,7 @@ func TestSaveShouldError(t *testing.T) {
 	} {
 		t.Run(scenario.description, func(t *testing.T) {
 			repositorySpy := account.RepositorySPY{
-				GetByCpfEntity: scenario.expectedGetByCpfEntiy,
+				GetByCpfEntity: scenario.expectedGetByCpfMock,
 				GetByCpfError:  scenario.expectedGetByCpfError,
 				SaveError:      scenario.expectedError,
 			}
@@ -85,7 +85,7 @@ func TestSaveShouldReturnPopulatedEntity(t *testing.T) {
 		expectedError         error
 		expectedSave          account.Entity
 		expectedGetByCpfError error
-		expectedGetByCpfEntiy *account.Entity
+		expectedGetByCpfMock  *account.Entity
 	}
 
 	expectedSave := account.Entity{
@@ -101,12 +101,12 @@ func TestSaveShouldReturnPopulatedEntity(t *testing.T) {
 			expectedError:         nil,
 			expectedSave:          expectedSave,
 			expectedGetByCpfError: nil,
-			expectedGetByCpfEntiy: nil,
+			expectedGetByCpfMock:  nil,
 		},
 	} {
 		t.Run(scenario.description, func(t *testing.T) {
 			repositorySpy := account.RepositorySPY{
-				GetByCpfEntity: scenario.expectedGetByCpfEntiy,
+				GetByCpfEntity: scenario.expectedGetByCpfMock,
 				GetByCpfError:  scenario.expectedGetByCpfError,
 				SaveError:      scenario.expectedError,
 			}

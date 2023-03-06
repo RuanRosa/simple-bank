@@ -25,7 +25,7 @@ type getBalanceRequest struct {
 	ID int `json:"id"`
 }
 
-func entiyToResponse(entity account.Entity) responseBody {
+func entityToResponse(entity account.Entity) responseBody {
 	return responseBody{
 		ID:        entity.ID,
 		Name:      entity.Name,
