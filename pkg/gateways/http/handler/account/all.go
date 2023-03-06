@@ -16,7 +16,7 @@ func (h *Handler) All(w http.ResponseWriter, r *http.Request) {
 	respBody := []responseBody{}
 
 	for _, account := range accounts {
-		respBody = append(respBody, entiyToResponse(account))
+		respBody = append(respBody, entityToResponse(account))
 	}
 
 	response := response.Json{}
